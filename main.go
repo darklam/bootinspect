@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/aymerick/douceur/parser"
-	"github.com/napsy/go-css"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -11,6 +9,9 @@ import (
 	"os/exec"
 	"runtime"
 	"time"
+
+	"github.com/aymerick/douceur/parser"
+	"github.com/napsy/go-css"
 )
 
 var parsedCSS = ""
@@ -36,7 +37,7 @@ func main() {
 		for k, v := range parsed {
 			fmt.Println(k)
 			for k, v := range v {
-				Inspect(k, v)
+				// Inspect(k, v)
 				fmt.Println(k)
 				fmt.Println(v)
 			}
@@ -45,6 +46,8 @@ func main() {
 		fmt.Println("Server is listening on port 8080")
 		go launchBrowser()
 		http.ListenAndServe(":8080", nil)
+	} else {
+		fmt.Println("Wrong arguments")
 	}
 }
 
@@ -69,7 +72,7 @@ func launchBrowser() {
 
 /*
 	Indicates whether CLI args are ok or not.
- */
+*/
 func argsOK() bool {
 	if len(os.Args) > 1 {
 		if os.Args[1] == "--file" && len(os.Args[2]) > 0 {
