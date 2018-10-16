@@ -3,13 +3,10 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
-	"os/exec"
-	"runtime"
-	"time"
 
+	"./browserUtil"
 	"github.com/aymerick/douceur/parser"
 	"github.com/napsy/go-css"
 )
@@ -25,6 +22,7 @@ func main() {
 		}
 		stylesheet, err := parser.Parse(string(b))
 		if err != nil {
+			fmt.Println(err)
 			panic("Please fill a bug :)")
 		}
 		parsed, err := css.Unmarshal([]byte(stylesheet.String()))
@@ -44,29 +42,10 @@ func main() {
 		}
 
 		fmt.Println("Server is listening on port 8080")
-		go launchBrowser()
+		go browserUtil.LaunchBrowser("http://127.0.0.1:8080/dashboard")
 		http.ListenAndServe(":8080", nil)
 	} else {
 		fmt.Println("Wrong arguments")
-	}
-}
-
-func launchBrowser() {
-	url := "http://127.0.0.1:8080/dashboard"
-	time.Sleep(1000 * time.Millisecond)
-	var err error
-	switch runtime.GOOS {
-	case "linux":
-		err = exec.Command("xdg-open", url).Start()
-	case "windows":
-		err = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
-	case "darwin":
-		err = exec.Command("open", url).Start()
-	default:
-		err = fmt.Errorf("unsupported platform")
-	}
-	if err != nil {
-		log.Fatal(err)
 	}
 }
 
