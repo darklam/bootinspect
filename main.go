@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"./browserUtil"
+	"./requestHandler"
 	"github.com/aymerick/douceur/parser"
 	"github.com/napsy/go-css"
 )
@@ -15,7 +16,6 @@ var parsedCSS = ""
 
 func main() {
 	if argsOK() {
-		http.HandleFunc("/dashboard", displayInspections)
 		b, err := ioutil.ReadFile(os.Args[2])
 		if err != nil {
 			fmt.Print(err)
@@ -40,6 +40,7 @@ func main() {
 				fmt.Println(v)
 			}
 		}
+		http.HandleFunc("/dashboard", requestHandler.HandleRequest(parsedCSS))
 
 		fmt.Println("Server is listening on port 8080")
 		go browserUtil.LaunchBrowser("http://127.0.0.1:8080/dashboard")
@@ -60,10 +61,4 @@ func argsOK() bool {
 		return false
 	}
 	return false
-}
-
-func displayInspections(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	fmt.Fprint(w, parsedCSS)
-	return
 }
